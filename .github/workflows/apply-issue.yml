@@ -7,6 +7,8 @@ on:
 permissions:
   contents: write
   issues: write
+  # 배포 워크플로를 직접 불러주기 위해 필요하다
+  actions: write
 
 # 이슈를 연달아 올려도 커밋이 서로 밀지 않도록 한 번에 하나씩
 concurrency:
@@ -71,6 +73,14 @@ jobs:
           git push origin HEAD:main
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      # GITHUB_TOKEN 으로 밀어넣은 push 는 다른 워크플로를 깨우지 않는다.
+      # (무한 루프 방지 규칙) 그래서 배포를 직접 불러준다.
+      - name: 배포 실행
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main
 
       - name: 이슈 닫기
         env:
