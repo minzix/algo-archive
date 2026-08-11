@@ -1,0 +1,172 @@
+/* 디자인 토큰 — design/reference.html 에서 추출 */
+
+:root {
+  /* 배경 · 면 */
+  --bg: #fbfbfc;
+  --surface: #fff;
+
+  /* 보더 (진함 → 옅음) */
+  --border: #e6e6e8;
+  --border-soft: #f0f0f2;
+  --border-row: #f2f2f4;
+
+  /* 텍스트 (진함 → 옅음) */
+  --ink: #17181a;
+  --ink-2: #2b2e33;
+  --ink-3: #4a4d55;
+  --muted: #8b8f96;
+  --muted-2: #9aa0a6;
+  --faint: #b8bcc2;
+  --faint-2: #c9ccd1;
+  --faint-3: #d5d7db;
+
+  /* 보조 면 */
+  --chip-bg: #f4f4f6;
+  --code-bg: #f7f7f8;
+  --row-hover: #fafafb;
+
+  /* 상태 */
+  --ok: #2f7a55;
+  --warn: #b0742a;
+  --err: #b3453c;
+  --err-bg: #fdf7f6;
+  --err-border: #f0dcda;
+
+  /* diff */
+  --diff-add: #f2f8f4;
+  --diff-del: #fdf5f4;
+
+  /* 히트맵 5단계 */
+  --heat-0: #f0f0f2;
+  --heat-1: #d5d7db;
+  --heat-2: #a8acb3;
+  --heat-3: #6b7078;
+  --heat-4: #2b2e33;
+
+  /* 레이아웃 */
+  --page-w: 1240px;
+  --page-pad: 40px;
+  --header-h: 64px;
+
+  /* 타이포 */
+  --sans: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--ink-3);
+}
+
+pre {
+  margin: 0;
+}
+
+/* ── 공통 프리미티브 ─────────────────────────────────── */
+
+/* 페이지 컨테이너 */
+.page {
+  max-width: var(--page-w);
+  margin: 0 auto;
+  padding: 48px var(--page-pad) 96px;
+}
+
+.page--narrow {
+  max-width: 900px;
+  padding-top: 40px;
+}
+
+.page--flow {
+  max-width: 860px;
+  padding-top: 40px;
+}
+
+/* 대문자 모노 라벨 — 섹션 헤딩과 페이지 아이브로우 공통 */
+.eyebrow,
+.section-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+  margin: 0;
+}
+
+.eyebrow {
+  color: var(--muted-2);
+  margin-bottom: 12px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* 카드 — 그림자 없음, 각진 1px 보더 */
+.card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+/* 뒤로 가기 링크 */
+.back {
+  display: inline-block;
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+/* 유형 태그 */
+.tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  background: var(--chip-bg);
+  padding: 3px 7px;
+}
+
+/* 기본 버튼 — 검은 채움 */
+.btn {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  padding: 13px 28px;
+  font-size: 13.5px;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--faint-3);
+  padding: 13px 24px;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --page-pad: 20px;
+  }
+}
