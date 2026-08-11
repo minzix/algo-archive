@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Code from '../../components/Code.astro';
 import Diff from '../../components/Diff.astro';
 import Section from '../../components/Section.astro';
+import AnnotateForm from '../../components/AnnotateForm.astro';
 import {
   concepts,
   getContent,
@@ -12,7 +13,6 @@ import {
   STATUS_COLOR,
 } from '../../lib/data';
 import { RESULT_LABEL, type ReviewResult } from '../../lib/types';
-import { annotateUrl, conceptUrl } from '../../lib/issue';
 import { fullDate, href } from '../../lib/url';
 
 export function getStaticPaths() {
@@ -84,12 +84,7 @@ const resultColor: Record<ReviewResult, string> = {
           <div class="card prose">
             {
               content.approach || (
-                <span class="todo">
-                  아직 기록하지 않았습니다.
-                  <a class="write" href={annotateUrl(problem.id)} target="_blank" rel="noopener">
-                    오답노트 쓰기 →
-                  </a>
-                </span>
+                <span class="todo">아직 기록하지 않았습니다. 아래에서 바로 쓸 수 있습니다.</span>
               )
             }
           </div>
@@ -158,12 +153,7 @@ const resultColor: Record<ReviewResult, string> = {
                   ))}
                 </ol>
               ) : (
-                <p class="prose todo">
-                  오답 원인을 아직 정리하지 않았습니다.
-                  <a class="write" href={annotateUrl(problem.id)} target="_blank" rel="noopener">
-                    오답노트 쓰기 →
-                  </a>
-                </p>
+                <p class="prose todo">오답 원인을 아직 정리하지 않았습니다.</p>
               )
             }
           </div>
@@ -202,18 +192,12 @@ const resultColor: Record<ReviewResult, string> = {
             }
           </div>
         </Section>
+
+        <AnnotateForm problem={problem} content={content} />
       </div>
 
       <aside class="side">
-        <div class="actions">
-          <a class="btn review-cta" href={href(`/reviews/${problem.id}`)}>이 문제 복습하기</a>
-          <a class="write-cta" href={annotateUrl(problem.id)} target="_blank" rel="noopener">
-            오답노트 {content.approach ? '고치기' : '쓰기'} ↗
-          </a>
-          <a class="write-cta" href={conceptUrl(problem.id)} target="_blank" rel="noopener">
-            배운 개념 추가 ↗
-          </a>
-        </div>
+        <a class="btn review-cta" href={href(`/reviews/${problem.id}`)}>이 문제 복습하기</a>
 
         {
           linked.length > 0 && (
@@ -473,37 +457,10 @@ const resultColor: Record<ReviewResult, string> = {
     top: 88px;
   }
 
-  .actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
   .review-cta {
     text-align: center;
     padding: 16px 20px;
     font-size: 13.5px;
-  }
-
-  .write-cta {
-    text-align: center;
-    padding: 12px 20px;
-    font-size: 12.5px;
-    color: var(--ink-3);
-    border: 1px solid var(--border);
-    background: var(--surface);
-  }
-
-  .write-cta:hover {
-    border-color: var(--faint);
-    color: var(--ink);
-  }
-
-  .write {
-    margin-left: 8px;
-    border-bottom: 1px solid var(--faint-3);
-    color: var(--ink-3);
-    white-space: nowrap;
   }
 
   .side-title {

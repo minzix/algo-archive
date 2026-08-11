@@ -3,7 +3,6 @@ import Base from '../../layouts/Base.astro';
 import Code from '../../components/Code.astro';
 import { getContent, historyOf, problemCode, problems } from '../../lib/data';
 import { RESULT_LABEL, RESULT_TO_STATUS, type ReviewResult } from '../../lib/types';
-import { annotateUrl, reviewUrl } from '../../lib/issue';
 import { fullDate, href } from '../../lib/url';
 
 export function getStaticPaths() {
@@ -25,7 +24,7 @@ const results: { key: ReviewResult; tone: string }[] = [
 ---
 
 <Base title={`${problem.title} 복습`} nav="reviews">
-  <main class="page page--flow" data-problem={problem.id}>
+  <main class="page page--flow" data-problem={problem.id} data-settings={href('/settings')}>
     <a class="back" href={href('/reviews')}>← Needs Review</a>
 
     <div class="steps">
@@ -88,11 +87,8 @@ const results: { key: ReviewResult; tone: string }[] = [
                 </>
               ) : (
                 <p class="p">
-                  이 문제에는 오답노트가 없습니다. 복습을 마친 뒤{' '}
-                  <a href={annotateUrl(problem.id)} target="_blank" rel="noopener">
-                    오답노트를 써두면
-                  </a>{' '}
-                  다음 복습 때 이 자리에 나옵니다.
+                  이 문제에는 오답노트가 없습니다. 문제 상세에서 오답노트를 써두면 다음 복습
+                  때 이 자리에 나옵니다.
                 </p>
               )
             }
@@ -166,20 +162,14 @@ const results: { key: ReviewResult; tone: string }[] = [
       </div>
 
       <div class="save card">
-        <p class="save-lead">
-          아래 버튼을 누르면 고른 결과가 채워진 폼이 열립니다. 제출하면 이력과 상태가 기록되고
-          사이트가 다시 배포됩니다.
-        </p>
-        <a class="btn" id="submit" href={reviewUrl(problem.id)} target="_blank" rel="noopener">
-          복습 결과 기록하기 ↗
-        </a>
-        <details class="terminal">
-          <summary>터미널을 쓰고 싶다면</summary>
-          <div class="cmd">
-            <code class="mono" id="cmd"></code>
-            <button class="copy mono" type="button" id="copy">COPY</button>
-          </div>
-        </details>
+        <label class="save-note">
+          <span class="save-lead">이번에 알게 된 것</span>
+          <textarea id="note" rows="3" placeholder="복습 이력에 함께 남습니다"></textarea>
+        </label>
+        <div class="save-row">
+          <button class="btn" type="button" id="submit">복습 결과 저장</button>
+          <span class="save-status" id="status"></span>
+        </div>
       </div>
 
       <div class="nav">
@@ -191,19 +181,24 @@ const results: { key: ReviewResult; tone: string }[] = [
 </Base>
 
 <script>
-  const problemId = document.querySelector<HTMLElement>('[data-problem]')!.dataset.problem!;
+  import { saveReview } from '../../lib/edit';
+  import { hasToken } from '../../lib/github';
+  import type { ReviewResult } from '../../lib/types';
+
+  const root = document.querySelector<HTMLElement>('[data-problem]')!;
+  const problemId = root.dataset.problem!;
+  const settings = root.dataset.settings!;
 
   const panes = [...document.querySelectorAll<HTMLElement>('[data-pane]')];
   const stepEls = [...document.querySelectorAll<HTMLElement>('.step')];
   const approach = document.querySelector<HTMLTextAreaElement>('#approach')!;
   const solution = document.querySelector<HTMLTextAreaElement>('#solution')!;
+  const note = document.querySelector<HTMLTextAreaElement>('#note')!;
   const echo = document.querySelector<HTMLElement>('#echo')!;
-  const cmd = document.querySelector<HTMLElement>('#cmd')!;
-  const copyBtn = document.querySelector<HTMLButtonElement>('#copy')!;
-  const submit = document.querySelector<HTMLAnchorElement>('#submit')!;
-  const submitBase = submit.href;
+  const submit = document.querySelector<HTMLButtonElement>('#submit')!;
+  const status = document.querySelector<HTMLElement>('#status')!;
 
-  // 초안은 브라우저에만 남는다. 실제 저장은 폼 제출이나 CLI 몫.
+  // 저장 전까지 적은 내용은 이 브라우저에만 남는다.
   const draftKey = (name: string) => `algo-archive:${problemId}:${name}`;
 
   for (const [el, name] of [
@@ -218,8 +213,6 @@ const results: { key: ReviewResult; tone: string }[] = [
     panes.forEach((p) => (p.hidden = Number(p.dataset.pane) !== step));
     stepEls.forEach((s) => s.classList.toggle('done', Number(s.dataset.step) <= step));
     if (step === 2) echo.textContent = approach.value.trim() || '아직 적지 않았습니다.';
-    // 4단계로 올 때 3단계에서 쓴 코드를 폼 링크에 반영한다
-    if (step === 4) updateCommand();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -227,38 +220,47 @@ const results: { key: ReviewResult; tone: string }[] = [
     btn.addEventListener('click', () => show(Number(btn.dataset.go)));
   }
 
-  // 결과 선택 → 실행할 명령 갱신
   const options = [...document.querySelectorAll<HTMLElement>('.option')];
-
-  /** GitHub는 URL 길이에 한계가 있어 긴 코드는 프리필하지 않는다. */
-  const PREFILL_LIMIT = 4000;
-
-  function updateCommand() {
-    const picked = options.find((o) => o.classList.contains('on'))!;
-    cmd.textContent = `npm run review ${problemId} -- --result=${picked.dataset.result}`;
-
-    const url = new URL(submitBase);
-    url.searchParams.set('result', picked.dataset.label!);
-
-    const code = solution.value.trim();
-    if (code && code.length <= PREFILL_LIMIT) url.searchParams.set('code', code);
-    submit.href = url.toString();
-  }
-
   for (const option of options) {
     option.addEventListener('click', () => {
       options.forEach((x) => x.classList.toggle('on', x === option));
-      updateCommand();
     });
   }
 
-  copyBtn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(cmd.textContent ?? '');
-    copyBtn.textContent = 'COPIED';
-    setTimeout(() => (copyBtn.textContent = 'COPY'), 1500);
+  function say(message: string, tone: 'ok' | 'err' | 'muted') {
+    status.textContent = message;
+    status.dataset.tone = tone;
+  }
+
+  submit.addEventListener('click', async () => {
+    if (!hasToken()) {
+      status.dataset.tone = 'err';
+      status.innerHTML = `먼저 <a href="${settings}">설정에서 토큰</a>을 등록해주세요.`;
+      return;
+    }
+
+    const picked = options.find((o) => o.classList.contains('on'))!;
+    submit.disabled = true;
+    say('저장 중…', 'muted');
+
+    try {
+      const sha = await saveReview({
+        problemId,
+        result: picked.dataset.result as ReviewResult,
+        note: note.value,
+        code: solution.value,
+      });
+      // 저장했으니 초안은 비운다
+      localStorage.removeItem(draftKey('approach'));
+      localStorage.removeItem(draftKey('solution'));
+      say(`저장했습니다 (${sha}). 1~2분 뒤 반영됩니다.`, 'ok');
+    } catch (error) {
+      say(error instanceof Error ? error.message : String(error), 'err');
+    } finally {
+      submit.disabled = false;
+    }
   });
 
-  updateCommand();
   show(1);
 </script>
 
@@ -475,54 +477,57 @@ const results: { key: ReviewResult; tone: string }[] = [
     padding: 22px 24px;
   }
 
+  .save-note {
+    display: block;
+  }
+
   .save-lead {
-    margin: 0 0 14px;
+    display: block;
     font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .save-note textarea {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--ink-2);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    resize: vertical;
+    border-radius: 0;
+  }
+
+  .save-note textarea:focus {
+    outline: 1px solid var(--ink);
+  }
+
+  .save-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .save-status {
+    font-size: 12.5px;
     color: var(--muted);
   }
 
-  .terminal {
-    margin-top: 18px;
+  .save-status[data-tone='ok'] {
+    color: var(--ok);
   }
 
-  .terminal summary {
-    font-size: 12px;
-    color: var(--muted-2);
-    cursor: pointer;
+  .save-status[data-tone='err'] {
+    color: var(--err);
   }
 
-  .cmd {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--code-bg);
-    padding: 12px 14px;
-    margin-top: 12px;
-  }
-
-  .cmd code {
-    font-size: 12.5px;
-    color: var(--ink-2);
-    overflow-x: auto;
-    flex: 1;
-  }
-
-  .copy {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--ink-3);
-    padding: 5px 10px;
-    cursor: pointer;
-    flex: none;
-  }
-
-  .save-hint {
-    margin: 14px 0 0;
-    font-size: 11.5px;
-    color: var(--muted-2);
+  .save-status :global(a) {
+    border-bottom: 1px solid currentColor;
   }
 
   .nav {

@@ -1,0 +1,279 @@
+---
+import { concepts, problemCode, problems } from '../lib/data';
+import { href } from '../lib/url';
+
+/** 관련 문제는 최근에 푼 것부터 고르게 한다 */
+const options = [...problems].sort((a, b) =>
+  (b.firstSolvedAt ?? '').localeCompare(a.firstSolvedAt ?? ''),
+);
+---
+
+<details class="card panel" data-concept data-settings={href('/settings')}>
+  <summary>
+    <span class="label">개념 카드 추가</span>
+    <span class="hint">새로 배운 문법이나 알고리즘</span>
+  </summary>
+
+  <form class="body">
+    <div class="row">
+      <span class="name">종류</span>
+      <div class="checks">
+        {
+          (['Java', 'Algorithm'] as const).map((c, i) => (
+            <label class="check">
+              <input type="radio" name="category" value={c} checked={i === 0} />
+              <span>{c === 'Java' ? 'Java · 문법 / API' : 'Algorithm · 알고리즘 / 자료구조'}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
+
+    <label class="row">
+      <span class="name">이름</span>
+      <input name="title" type="text" placeholder="PriorityQueue" required />
+    </label>
+
+    <label class="row">
+      <span class="name">한 줄 설명</span>
+      <input name="description" type="text" placeholder="우선순위에 따라 원소를 꺼내는 Queue" />
+    </label>
+
+    <label class="row">
+      <span class="name">예제 코드</span>
+      <textarea name="code" class="mono code" rows="5" spellcheck="false"
+        placeholder="PriorityQueue<Integer> pq = new PriorityQueue<>();"></textarea>
+    </label>
+
+    <label class="row">
+      <span class="name">관련 문제</span>
+      <select name="relatedProblems" multiple size="6">
+        {
+          options.map((p) => (
+            <option value={p.id}>
+              {problemCode(p)} · {p.title}
+            </option>
+          ))
+        }
+      </select>
+    </label>
+
+    {
+      concepts.length > 0 && (
+        <label class="row">
+          <span class="name">관련 개념</span>
+          <select name="related" multiple size={Math.min(concepts.length, 5)}>
+            {concepts.map((c) => (
+              <option value={c.id}>
+                {c.title} ({c.category})
+              </option>
+            ))}
+          </select>
+        </label>
+      )
+    }
+
+    <div class="actions">
+      <button class="btn" type="submit">추가</button>
+      <span class="status" data-status></span>
+    </div>
+  </form>
+</details>
+
+<script>
+  import { saveConcept } from '../lib/edit';
+  import { hasToken } from '../lib/github';
+  import type { Concept } from '../lib/types';
+
+  const panel = document.querySelector<HTMLElement>('[data-concept]');
+
+  if (panel) {
+    const form = panel.querySelector('form')!;
+    const status = panel.querySelector<HTMLElement>('[data-status]')!;
+    const button = form.querySelector('button')!;
+
+    /** multiple select 에서 고른 값들 */
+    const selected = (name: string) =>
+      [...form.querySelectorAll<HTMLOptionElement>(`select[name="${name}"] option:checked`)].map(
+        (o) => o.value,
+      );
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      if (!hasToken()) {
+        status.dataset.tone = 'err';
+        status.innerHTML = `먼저 <a href="${panel.dataset.settings}">설정에서 토큰</a>을 등록해주세요.`;
+        return;
+      }
+
+      const data = new FormData(form);
+      button.disabled = true;
+      status.dataset.tone = 'muted';
+      status.textContent = '저장 중…';
+
+      try {
+        const sha = await saveConcept({
+          category: String(data.get('category')) as Concept['category'],
+          title: String(data.get('title') ?? ''),
+          description: String(data.get('description') ?? ''),
+          code: String(data.get('code') ?? ''),
+          relatedProblems: selected('relatedProblems'),
+          related: selected('related'),
+        });
+        form.reset();
+        status.dataset.tone = 'ok';
+        status.textContent = `추가했습니다 (${sha}). 1~2분 뒤 반영됩니다.`;
+      } catch (error) {
+        status.dataset.tone = 'err';
+        status.textContent = error instanceof Error ? error.message : String(error);
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .panel {
+    margin-bottom: 24px;
+  }
+
+  summary {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .panel[open] summary {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .label {
+    font-size: 13.5px;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: var(--muted-2);
+  }
+
+  .body {
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .name {
+    font-size: 12.5px;
+    color: var(--ink-3);
+    padding-top: 10px;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--ink-2);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 0;
+  }
+
+  textarea,
+  select {
+    resize: vertical;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: 1px solid var(--ink);
+  }
+
+  select {
+    padding: 6px;
+  }
+
+  option {
+    padding: 5px 8px;
+    font-size: 13px;
+  }
+
+  .code {
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding-top: 10px;
+  }
+
+  .check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .check input {
+    width: auto;
+    accent-color: var(--ink);
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .status {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .status[data-tone='ok'] {
+    color: var(--ok);
+  }
+
+  .status[data-tone='err'] {
+    color: var(--err);
+  }
+
+  .status :global(a) {
+    border-bottom: 1px solid currentColor;
+  }
+
+  @media (max-width: 700px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .name,
+    .checks {
+      padding-top: 0;
+    }
+  }
+</style>

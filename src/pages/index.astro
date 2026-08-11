@@ -11,7 +11,6 @@ import {
   stats,
   typeCounts,
 } from '../lib/data';
-import { conceptUrl } from '../lib/issue';
 import { href, shortDate } from '../lib/url';
 
 const s = stats();
@@ -157,9 +156,7 @@ const tiles = [
         ) : (
           <p class="empty">
             아직 기록한 개념이 없습니다.
-            <a class="add" href={conceptUrl()} target="_blank" rel="noopener">
-              개념 추가하기 →
-            </a>
+            <a class="add" href={href('/concepts')}>개념 추가하기 →</a>
           </p>
         )
       }

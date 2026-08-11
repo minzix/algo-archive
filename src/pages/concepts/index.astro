@@ -1,8 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
+import ConceptForm from '../../components/ConceptForm.astro';
 import { concepts } from '../../lib/data';
-import { conceptUrl } from '../../lib/issue';
 import { href } from '../../lib/url';
 
 const sorted = [...concepts].sort(
@@ -28,6 +28,8 @@ const categories = [
       note="문제에서 새로 배운 문법과 알고리즘이 쌓입니다"
     />
 
+    <ConceptForm />
+
     {
       sorted.length === 0 ? (
         <div class="card blank">
@@ -35,9 +37,6 @@ const categories = [
           <p class="hint">
             문제를 풀며 새로 알게 된 문법이나 알고리즘을 추가하면 여기에 복습 카드로 쌓입니다.
           </p>
-          <a class="btn add" href={conceptUrl()} target="_blank" rel="noopener">
-            개념 추가하기 ↗
-          </a>
         </div>
       ) : (
         <div class="cols">
@@ -169,10 +168,6 @@ const categories = [
     color: var(--muted);
     font-size: 13px !important;
     line-height: 1.9;
-  }
-
-  .add {
-    margin-top: 20px;
   }
 
   .hint code {
