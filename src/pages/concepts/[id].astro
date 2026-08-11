@@ -1,0 +1,153 @@
+---
+import Base from '../../layouts/Base.astro';
+import Section from '../../components/Section.astro';
+import { concepts, problemById, problemCode } from '../../lib/data';
+import { href } from '../../lib/url';
+
+export function getStaticPaths() {
+  return concepts.map((c) => ({ params: { id: c.id }, props: { concept: c } }));
+}
+
+const { concept } = Astro.props;
+
+const usedIn = concept.relatedProblems.map((id) => problemById(id)).filter((p) => p !== undefined);
+const related = concept.related.map((id) => concepts.find((c) => c.id === id)).filter((c) => c !== undefined);
+---
+
+<Base title={concept.title} nav="concepts">
+  <main class="page page--narrow">
+    <a class="back" href={href('/concepts')}>← Concepts</a>
+
+    <div class="eyebrow">{concept.category === 'Java' ? 'JAVA API' : 'ALGORITHM'}</div>
+    <h1 class="mono title">{concept.title}</h1>
+    <p class="desc">{concept.description}</p>
+
+    {
+      concept.code && (
+        <Section title="USAGE" class="usage">
+          <pre class="card mono snippet">{concept.code}</pre>
+        </Section>
+      )
+    }
+
+    <div class="cols">
+      <Section title="FIRST USED IN">
+        <div class="card">
+          {
+            usedIn.length ? (
+              usedIn.map((p) => (
+                <a class="link mono" href={href(`/problems/${p.id}`)}>
+                  {problemCode(p)}
+                  <span class="pt">{p.title}</span>
+                </a>
+              ))
+            ) : (
+              <p class="none">연결된 문제가 없습니다.</p>
+            )
+          }
+        </div>
+      </Section>
+
+      <Section title="RELATED">
+        {
+          related.length ? (
+            <div class="chips">
+              {related.map((c) => (
+                <a class="mono chip" href={href(`/concepts/${c.id}`)}>
+                  {c.title}
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p class="none none--bare">아직 없습니다.</p>
+          )
+        }
+      </Section>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .title {
+    margin: 0 0 12px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .desc {
+    margin: 0 0 40px;
+    font-size: 15px;
+    color: var(--ink-3);
+    text-wrap: pretty;
+  }
+
+  .usage {
+    display: block;
+    margin-bottom: 36px;
+  }
+
+  .snippet {
+    padding: 20px 24px;
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: var(--ink-2);
+    overflow-x: auto;
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .link {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 13px;
+  }
+
+  .link:last-child {
+    border-bottom: 0;
+  }
+
+  .pt {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    font-size: 12.5px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 7px 12px;
+  }
+
+  .none {
+    margin: 0;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .none--bare {
+    padding: 0;
+  }
+
+  @media (max-width: 760px) {
+    .cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

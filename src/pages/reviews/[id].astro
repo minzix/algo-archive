@@ -1,0 +1,502 @@
+---
+import Base from '../../layouts/Base.astro';
+import Code from '../../components/Code.astro';
+import { getContent, historyOf, problemCode, problems } from '../../lib/data';
+import { RESULT_LABEL, RESULT_TO_STATUS, type ReviewResult } from '../../lib/types';
+import { fullDate, href } from '../../lib/url';
+
+export function getStaticPaths() {
+  return problems.map((p) => ({ params: { id: p.id }, props: { problem: p } }));
+}
+
+const { problem } = Astro.props;
+const content = getContent(problem.id);
+const history = historyOf(problem.id);
+const firstNote = history[0];
+
+const steps = ['01 문제 다시 보기', '02 오답노트 확인', '03 다시 풀기', '04 복습 결과'];
+
+const results: { key: ReviewResult; tone: string }[] = [
+  { key: 'FAILED', tone: 'var(--err)' },
+  { key: 'PARTIAL', tone: 'var(--warn)' },
+  { key: 'UNDERSTOOD', tone: 'var(--ok)' },
+];
+---
+
+<Base title={`${problem.title} 복습`} nav="reviews">
+  <main class="page page--flow" data-problem={problem.id}>
+    <a class="back" href={href('/reviews')}>← Needs Review</a>
+
+    <div class="steps">
+      {
+        steps.map((label, i) => (
+          <div class="step" data-step={i + 1}>
+            <div class="bar" />
+            <div class="mono slabel">{label}</div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="head">
+      <span class="mono code">{problemCode(problem)}</span>
+      <h1 class="title">{problem.title}</h1>
+      <a class="src" href={problem.url} target="_blank" rel="noopener">문제 보기 ↗</a>
+    </div>
+
+    <!-- STEP 1 -->
+    <section data-pane="1">
+      <h2 class="section-title">STEP 1 · 내가 생각한 접근</h2>
+      <p class="lead">기존 오답노트를 보기 전에, 지금 떠오르는 접근을 먼저 적습니다.</p>
+      <textarea
+        class="card input"
+        id="approach"
+        placeholder="이 문제를 어떻게 풀지 지금 떠오르는 대로 적어보세요."></textarea>
+      <div class="nav nav--end">
+        <button class="btn" type="button" data-go="2">접근 확인하기</button>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section data-pane="2" hidden>
+      <div class="stack">
+        <div>
+          <h2 class="section-title">MY APPROACH · 방금 적은 접근</h2>
+          <div class="card prose" id="echo"></div>
+        </div>
+
+        <div>
+          <h2 class="section-title err">
+            ORIGINAL MISTAKE{firstNote && ` · ${fullDate(firstNote.date)}`}
+          </h2>
+          <div class="card prose prose--err">
+            {
+              content.approach || content.whyWrong.length ? (
+                <>
+                  {content.approach && <p class="p">{content.approach}</p>}
+                  {content.whyWrong.length > 0 && (
+                    <ul class="why">
+                      {content.whyWrong.map((r) => (
+                        <li>{r}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {problem.mistakes.length > 0 && (
+                    <p class="arrow">→ {problem.mistakes.join(' · ')}</p>
+                  )}
+                </>
+              ) : (
+                <p class="p">
+                  이 문제에는 오답노트가 없습니다. 복습을 마친 뒤{' '}
+                  <code>npm run annotate {problem.id}</code> 로 남겨두면 다음 복습 때 이 자리에
+                  나옵니다.
+                </p>
+              )
+            }
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <button class="btn btn--ghost" type="button" data-go="1">이전</button>
+        <button class="btn" type="button" data-go="3">다시 풀어보기</button>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section data-pane="3" hidden>
+      <h2 class="section-title">STEP 3 · MY NEW SOLUTION</h2>
+      <p class="lead">
+        여기에 적은 코드는 브라우저에만 남습니다. 저장하려면 마지막 단계의 명령을 실행하세요.
+      </p>
+      <textarea class="card input input--code mono" id="solution" spellcheck="false"
+      ></textarea>
+
+      {
+        content.attempts.length > 0 && (
+          <div class="past">
+            <h2 class="section-title">지난 복습 코드</h2>
+            {content.attempts.map((a) => (
+              <div class="card">
+                <Code code={a.code} label={`attempts/${a.file}`} />
+              </div>
+            ))}
+          </div>
+        )
+      }
+
+      <div class="past">
+        <h2 class="section-title">ANSWER CODE</h2>
+        <details class="card reveal">
+          <summary>정답 코드 보기</summary>
+          <Code code={content.answerCode} />
+        </details>
+      </div>
+
+      <div class="nav">
+        <button class="btn btn--ghost" type="button" data-go="2">이전</button>
+        <button class="btn" type="button" data-go="4">복습 완료</button>
+      </div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section data-pane="4" hidden>
+      <h2 class="section-title">STEP 4 · 이번 복습 결과</h2>
+      <p class="lead">고른 결과가 문제의 복습 상태로 기록됩니다.</p>
+
+      <div class="options">
+        {
+          results.map((r, i) => (
+            <button
+              class:list={['card option', { on: i === results.length - 1 }]}
+              type="button"
+              data-result={r.key}
+            >
+              <span class="dot" />
+              <span class="olabel">{RESULT_LABEL[r.key]}</span>
+              <span class="mono otag" style={`color: ${r.tone}`}>
+                {RESULT_TO_STATUS[r.key]}
+              </span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="save card">
+        <p class="save-lead">터미널에서 아래 명령을 실행하면 이력과 상태가 기록됩니다.</p>
+        <div class="cmd">
+          <code class="mono" id="cmd"></code>
+          <button class="copy mono" type="button" id="copy">COPY</button>
+        </div>
+        <p class="save-hint mono">git commit -m "review: {problemCode(problem)}"</p>
+      </div>
+
+      <div class="nav">
+        <button class="btn btn--ghost" type="button" data-go="3">이전</button>
+        <a class="btn" href={href(`/problems/${problem.id}`)}>문제 상세로</a>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  const problemId = document.querySelector<HTMLElement>('[data-problem]')!.dataset.problem!;
+
+  const panes = [...document.querySelectorAll<HTMLElement>('[data-pane]')];
+  const stepEls = [...document.querySelectorAll<HTMLElement>('.step')];
+  const approach = document.querySelector<HTMLTextAreaElement>('#approach')!;
+  const solution = document.querySelector<HTMLTextAreaElement>('#solution')!;
+  const echo = document.querySelector<HTMLElement>('#echo')!;
+  const cmd = document.querySelector<HTMLElement>('#cmd')!;
+  const copyBtn = document.querySelector<HTMLButtonElement>('#copy')!;
+
+  // 초안은 브라우저에만 남는다. 실제 저장은 CLI 몫.
+  const draftKey = (name: string) => `algo-archive:${problemId}:${name}`;
+
+  for (const [el, name] of [
+    [approach, 'approach'],
+    [solution, 'solution'],
+  ] as const) {
+    el.value = localStorage.getItem(draftKey(name)) ?? '';
+    el.addEventListener('input', () => localStorage.setItem(draftKey(name), el.value));
+  }
+
+  function show(step: number) {
+    panes.forEach((p) => (p.hidden = Number(p.dataset.pane) !== step));
+    stepEls.forEach((s) => s.classList.toggle('done', Number(s.dataset.step) <= step));
+    if (step === 2) echo.textContent = approach.value.trim() || '아직 적지 않았습니다.';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  for (const btn of document.querySelectorAll<HTMLElement>('[data-go]')) {
+    btn.addEventListener('click', () => show(Number(btn.dataset.go)));
+  }
+
+  // 결과 선택 → 실행할 명령 갱신
+  const options = [...document.querySelectorAll<HTMLElement>('.option')];
+
+  function updateCommand() {
+    const picked = options.find((o) => o.classList.contains('on'))!;
+    cmd.textContent = `npm run review ${problemId} -- --result=${picked.dataset.result}`;
+  }
+
+  for (const option of options) {
+    option.addEventListener('click', () => {
+      options.forEach((x) => x.classList.toggle('on', x === option));
+      updateCommand();
+    });
+  }
+
+  copyBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(cmd.textContent ?? '');
+    copyBtn.textContent = 'COPIED';
+    setTimeout(() => (copyBtn.textContent = 'COPY'), 1500);
+  });
+
+  updateCommand();
+  show(1);
+</script>
+
+<style>
+  .steps {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 36px;
+  }
+
+  .step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bar {
+    height: 3px;
+    background: var(--border);
+  }
+
+  .slabel {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+  }
+
+  .step.done .bar {
+    background: var(--ink);
+  }
+
+  .step.done .slabel {
+    color: var(--ink);
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .code {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .title {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .src {
+    font-size: 12.5px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--faint-3);
+  }
+
+  .lead {
+    margin: 8px 0 20px;
+    font-size: 13.5px;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .input {
+    display: block;
+    width: 100%;
+    padding: 22px 24px;
+    min-height: 220px;
+    font-family: var(--sans);
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--ink-2);
+    resize: vertical;
+    border-radius: 0;
+  }
+
+  .input:focus {
+    outline: 1px solid var(--ink);
+  }
+
+  .input--code {
+    min-height: 260px;
+    font-size: 12.5px;
+    line-height: 1.85;
+    padding: 20px 24px;
+  }
+
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .err {
+    color: var(--err);
+  }
+
+  .section-title + .prose,
+  .section-title + .card {
+    margin-top: 14px;
+  }
+
+  .prose {
+    padding: 22px 24px;
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--ink-2);
+    text-wrap: pretty;
+    white-space: pre-wrap;
+  }
+
+  .prose--err {
+    border-color: var(--err-border);
+    background: var(--err-bg);
+    white-space: normal;
+  }
+
+  .p {
+    margin: 0;
+  }
+
+  .why {
+    margin: 12px 0 0;
+    padding-left: 20px;
+  }
+
+  .arrow {
+    margin: 12px 0 0;
+    color: var(--err);
+  }
+
+  .prose code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface);
+    padding: 2px 6px;
+  }
+
+  .past {
+    margin-top: 28px;
+  }
+
+  .past .card + .card {
+    margin-top: 12px;
+  }
+
+  .reveal summary {
+    padding: 14px 18px;
+    font-size: 12.5px;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .reveal[open] summary {
+    border-bottom: 1px solid var(--border);
+    color: var(--ink);
+  }
+
+  /* STEP 4 */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    font-family: inherit;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 0;
+  }
+
+  .option.on {
+    border-color: var(--ink);
+  }
+
+  .dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid var(--faint-2);
+    background: var(--surface);
+    display: block;
+    flex: none;
+  }
+
+  .option.on .dot {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+
+  .olabel {
+    font-size: 14.5px;
+  }
+
+  .otag {
+    margin-left: auto;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .save {
+    margin-top: 24px;
+    padding: 22px 24px;
+  }
+
+  .save-lead {
+    margin: 0 0 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .cmd {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--code-bg);
+    padding: 12px 14px;
+  }
+
+  .cmd code {
+    font-size: 12.5px;
+    color: var(--ink-2);
+    overflow-x: auto;
+    flex: 1;
+  }
+
+  .copy {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-3);
+    padding: 5px 10px;
+    cursor: pointer;
+    flex: none;
+  }
+
+  .save-hint {
+    margin: 14px 0 0;
+    font-size: 11.5px;
+    color: var(--muted-2);
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .nav--end {
+    justify-content: flex-end;
+  }
+</style>

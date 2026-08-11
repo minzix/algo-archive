@@ -1,0 +1,182 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { needsReview, problemCode } from '../../lib/data';
+import { href, shortDate } from '../../lib/url';
+
+const list = needsReview();
+---
+
+<Base title="Reviews" nav="reviews">
+  <main class="page">
+    <PageHead
+      eyebrow="REVIEWS"
+      title={list.length ? `다시 복습해야 하는 문제 ${list.length}개` : '복습할 문제가 없습니다'}
+      note="복습을 마치면 UNDERSTOOD 로 이동합니다"
+    />
+
+    {
+      list.length ? (
+        <div class="card">
+          <div class="thead mono">
+            <span>ID</span><span>TITLE</span><span>TYPE</span><span>MISTAKE</span>
+            <span>LAST</span><span />
+          </div>
+          {list.map((p) => (
+            <div class="row">
+              <a class="mono id" href={href(`/problems/${p.id}`)}>
+                {problemCode(p)}
+              </a>
+              <span class="title">{p.title}</span>
+              <span class="type">{p.types.join(' / ') || '—'}</span>
+              <span class="mistake">{p.mistakes[0] ?? '—'}</span>
+              <span class="mono last">{shortDate(p.lastReviewedAt ?? p.firstSolvedAt)}</span>
+              <a class="start" href={href(`/reviews/${p.id}`)}>
+                복습 시작
+              </a>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="card blank">
+          <p>
+            복습 대기 중인 문제가 없습니다. 오답노트를 쓰면 문제가 <code>NEEDS_REVIEW</code> 로
+            바뀌면서 여기에 모입니다.
+          </p>
+          <p class="hint">
+            <code>npm run annotate &lt;id&gt;</code> 로 오답 원인을 정리하고,
+            <code>npm run review &lt;id&gt;</code> 로 복습 결과를 남기세요.
+          </p>
+        </div>
+      )
+    }
+  </main>
+</Base>
+
+<style>
+  .thead,
+  .row {
+    display: grid;
+    grid-template-columns: 110px minmax(160px, 1fr) 170px 130px 90px 110px;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .thead {
+    padding: 13px 24px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted-2);
+  }
+
+  .row {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-row);
+  }
+
+  .row:last-child {
+    border-bottom: 0;
+  }
+
+  .id {
+    font-size: 13px;
+  }
+
+  .title {
+    font-size: 14px;
+    text-wrap: pretty;
+  }
+
+  .type {
+    font-size: 12.5px;
+    color: var(--ink-3);
+  }
+
+  .mistake {
+    font-size: 12.5px;
+    color: var(--warn);
+  }
+
+  .last {
+    font-size: 12px;
+    color: var(--muted-2);
+  }
+
+  .start {
+    justify-self: end;
+    font-size: 12.5px;
+    border: 1px solid var(--ink);
+    padding: 6px 14px;
+    white-space: nowrap;
+  }
+
+  .start:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .blank {
+    padding: 48px 40px;
+    text-align: center;
+  }
+
+  .blank p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.9;
+    text-wrap: pretty;
+  }
+
+  .hint {
+    margin-top: 12px !important;
+    color: var(--muted);
+    font-size: 13px !important;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+  }
+
+  @media (max-width: 1000px) {
+    .thead {
+      display: none;
+    }
+
+    .row {
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'id last'
+        'title title'
+        'type mistake'
+        'start start';
+      gap: 8px 12px;
+    }
+
+    .id {
+      grid-area: id;
+    }
+    .last {
+      grid-area: last;
+      text-align: right;
+    }
+    .title {
+      grid-area: title;
+    }
+    .type {
+      grid-area: type;
+    }
+    .mistake {
+      grid-area: mistake;
+      text-align: right;
+    }
+    .start {
+      grid-area: start;
+      justify-self: start;
+      margin-top: 6px;
+    }
+  }
+</style>
