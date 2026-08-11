@@ -1,5 +1,15 @@
 [
   {
+    "id": "algorithm-test-pipeline",
+    "category": "Algorithm",
+    "title": "TestPipeline",
+    "description": "배포 자동 실행 검증용입니다. 확인 후 삭제합니다.",
+    "code": "",
+    "relatedProblems": [],
+    "related": [],
+    "learnedAt": "2026-08-11"
+  },
+  {
     "id": "java-test-concept",
     "category": "Java",
     "title": "TestConcept",
