@@ -1,0 +1,46 @@
+---
+interface Props {
+  code: string;
+  /** 코드 위 파일명 · 라벨 줄. 없으면 라벨 없이 코드만 */
+  label?: string;
+  /** 라벨 색 (MY CODE 빨강 / ANSWER CODE 초록) */
+  tone?: 'muted' | 'err' | 'ok';
+  class?: string;
+}
+
+const { code, label, tone = 'muted', class: className } = Astro.props;
+
+const toneColor = { muted: 'var(--muted-2)', err: 'var(--err)', ok: 'var(--ok)' }[tone];
+---
+
+<div class:list={['wrap', className]}>
+  {
+    label && (
+      <div class="label mono" style={`color: ${toneColor}`}>
+        {label}
+      </div>
+    )
+  }
+  <pre class="mono"><code>{code}</code></pre>
+</div>
+
+<style>
+  .wrap {
+    min-width: 0;
+  }
+
+  .label {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+
+  pre {
+    padding: 18px;
+    font-size: 12px;
+    line-height: 1.75;
+    color: var(--ink-2);
+    overflow-x: auto;
+  }
+</style>

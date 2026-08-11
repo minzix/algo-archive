@@ -1,0 +1,71 @@
+---
+import { diffLines } from 'diff';
+
+interface Props {
+  before: string;
+  after: string;
+  label: string;
+}
+
+const { before, after, label } = Astro.props;
+
+/** diffLines의 청크를 한 줄씩 부호가 붙은 목록으로 편다. */
+const lines = diffLines(before, after).flatMap((part) => {
+  const sign = part.added ? '+' : part.removed ? '-' : ' ';
+  return part.value
+    .split('\n')
+    // 청크 끝의 개행 때문에 생기는 빈 조각은 버린다
+    .slice(0, part.value.endsWith('\n') ? -1 : undefined)
+    .map((text) => ({ sign, text }));
+});
+
+const bg = { '+': 'var(--diff-add)', '-': 'var(--diff-del)', ' ': 'transparent' };
+const mark = { '+': 'var(--ok)', '-': 'var(--err)', ' ': 'var(--faint-2)' };
+---
+
+<div class="card">
+  <div class="label mono">{label}</div>
+  <div class="body">
+    {
+      lines.map((l) => (
+        <div class="line mono" style={`background: ${bg[l.sign as keyof typeof bg]}`}>
+          <span class="sign" style={`color: ${mark[l.sign as keyof typeof mark]}`}>
+            {l.sign}
+          </span>
+          <span class="text">{l.text}</span>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .label {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted-2);
+  }
+
+  .body {
+    padding: 14px 0;
+    overflow-x: auto;
+  }
+
+  .line {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    font-size: 12.5px;
+    line-height: 2;
+  }
+
+  .sign {
+    text-align: center;
+  }
+
+  .text {
+    color: var(--ink-2);
+    white-space: pre;
+  }
+</style>

@@ -1,0 +1,304 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { allTypes, byLastReview, problemCode, STATUS_COLOR } from '../../lib/data';
+import { MISTAKE_TYPES } from '../../lib/types';
+import { href } from '../../lib/url';
+
+const list = byLastReview();
+const typeFilters = ['전체', ...allTypes()];
+const mistakeFilters = ['전체', ...MISTAKE_TYPES];
+---
+
+<Base title="Problems" nav="problems">
+  <main class="page">
+    <PageHead eyebrow="PROBLEMS" title="문제 목록" />
+
+    <div class="card filters">
+      <div class="group">
+        <span class="mono label">TYPE</span>
+        <div class="chips" data-filter="type">
+          {
+            typeFilters.map((t, i) => (
+              <button class:list={['chip', { on: i === 0 }]} type="button" data-value={t}>
+                {t}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="group group--split">
+        <span class="mono label">MISTAKE</span>
+        <div class="chips" data-filter="mistake">
+          {
+            mistakeFilters.map((m, i) => (
+              <button class:list={['chip', { on: i === 0 }]} type="button" data-value={m}>
+                {m}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <span class="count"><b data-count>{list.length}</b>개 문제</span>
+      <span class="mono sorted">SORTED BY LAST REVIEW</span>
+    </div>
+
+    <div class="card table">
+      <div class="thead mono">
+        <span>ID</span><span>TITLE</span><span>TYPES</span><span>MISTAKE</span>
+        <span class="r">STATUS</span>
+      </div>
+
+      {
+        list.map((p) => (
+          <a
+            class="row"
+            href={href(`/problems/${p.id}`)}
+            data-types={JSON.stringify(p.types)}
+            data-mistakes={JSON.stringify(p.mistakes)}
+          >
+            <span class="mono id">{problemCode(p)}</span>
+            <span class="title">
+              {p.title}
+              <span class="mono level">{p.difficulty}</span>
+            </span>
+            <span class="tags">
+              {p.types.map((t) => (
+                <span class="tag">{t}</span>
+              ))}
+            </span>
+            <span class="mistake">{p.mistakes[0] ?? '—'}</span>
+            <span class="mono status r" style={`color: ${STATUS_COLOR[p.reviewStatus]}`}>
+              {p.reviewStatus}
+            </span>
+          </a>
+        ))
+      }
+
+      <p class="none" hidden>조건에 맞는 문제가 없습니다.</p>
+    </div>
+  </main>
+</Base>
+
+<script>
+  // 전체 목록을 서버에서 렌더해두고 여기서는 보이기/숨기기만 한다.
+  const picked = { type: '전체', mistake: '전체' };
+
+  const rows = [...document.querySelectorAll<HTMLElement>('.row')];
+  const counter = document.querySelector('[data-count]')!;
+  const empty = document.querySelector<HTMLElement>('.none')!;
+
+  function parse(row: HTMLElement, key: string): string[] {
+    return JSON.parse(row.dataset[key] ?? '[]');
+  }
+
+  function apply() {
+    let shown = 0;
+    for (const row of rows) {
+      const okType = picked.type === '전체' || parse(row, 'types').includes(picked.type);
+      const okMistake =
+        picked.mistake === '전체' || parse(row, 'mistakes').includes(picked.mistake);
+      const visible = okType && okMistake;
+      row.hidden = !visible;
+      if (visible) shown++;
+    }
+    counter.textContent = String(shown);
+    empty.hidden = shown > 0;
+  }
+
+  for (const group of document.querySelectorAll<HTMLElement>('.chips')) {
+    const key = group.dataset.filter as 'type' | 'mistake';
+    group.addEventListener('click', (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLElement>('.chip');
+      if (!chip) return;
+      picked[key] = chip.dataset.value!;
+      group.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c === chip));
+      apply();
+    });
+  }
+</script>
+
+<style>
+  .filters {
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .group {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    align-items: start;
+    gap: 16px;
+  }
+
+  .group--split {
+    border-top: 1px solid var(--border-soft);
+    padding-top: 16px;
+  }
+
+  .label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted-2);
+    padding-top: 7px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    font-family: inherit;
+    font-size: 12.5px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-3);
+    border-radius: 0;
+  }
+
+  .chip.on {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+
+  .summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .count {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .count b {
+    font-weight: 400;
+  }
+
+  .sorted {
+    font-size: 11px;
+    color: var(--muted-2);
+    letter-spacing: 0.06em;
+  }
+
+  .thead,
+  .row {
+    display: grid;
+    grid-template-columns: 120px 1fr 300px 130px 110px;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .thead {
+    padding: 13px 24px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted-2);
+  }
+
+  .row {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-row);
+  }
+
+  .row:hover {
+    background: var(--row-hover);
+  }
+
+  .row:last-of-type {
+    border-bottom: 0;
+  }
+
+  .id {
+    font-size: 13px;
+  }
+
+  .title {
+    font-size: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    text-wrap: pretty;
+  }
+
+  .level {
+    font-size: 11px;
+    color: var(--muted-2);
+    white-space: nowrap;
+  }
+
+  .tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .mistake {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .status {
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .r {
+    text-align: right;
+  }
+
+  .none {
+    margin: 0;
+    padding: 40px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 1100px) {
+    .thead {
+      display: none;
+    }
+
+    .row {
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'id status'
+        'title title'
+        'tags mistake';
+      gap: 8px 12px;
+    }
+
+    .id {
+      grid-area: id;
+    }
+    .status {
+      grid-area: status;
+    }
+    .title {
+      grid-area: title;
+    }
+    .tags {
+      grid-area: tags;
+    }
+    .mistake {
+      grid-area: mistake;
+      text-align: right;
+    }
+  }
+</style>
