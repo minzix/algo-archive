@@ -1,23 +1,64 @@
-import readline from 'node:readline/promises';
+import readline from 'node:readline';
 import { stdin, stdout } from 'node:process';
 
 const rl = readline.createInterface({ input: stdin, output: stdout });
+
+/**
+ * 들어온 줄을 큐에 모아둔다.
+ *
+ * readline은 질문을 기다리는 중이 아닐 때 들어온 줄을 그냥 버린다.
+ * 파이프로 입력을 넣으면 모든 줄이 한꺼번에 도착하므로 그대로 두면 대부분 유실된다.
+ * 큐에 쌓아두면 사람이 직접 치든 파이프로 넣든 똑같이 동작한다.
+ */
+const queued = [];
+const waiting = [];
+let ended = false;
+
+rl.on('line', (line) => {
+  const resolve = waiting.shift();
+  if (resolve) resolve(line);
+  else queued.push(line);
+});
+
+rl.on('close', () => {
+  ended = true;
+  while (waiting.length) waiting.shift()('');
+});
+
+function nextLine() {
+  if (queued.length) return Promise.resolve(queued.shift());
+  if (ended) return Promise.resolve('');
+  return new Promise((resolve) => waiting.push(resolve));
+}
 
 export function close() {
   rl.close();
 }
 
 export async function ask(question, fallback = '') {
-  const suffix = fallback ? ` (${fallback})` : '';
-  const answer = (await rl.question(`${question}${suffix}: `)).trim();
+  stdout.write(`${question}${fallback ? ` (${fallback})` : ''}: `);
+  const answer = (await nextLine()).trim();
   return answer || fallback;
 }
 
 export async function confirm(question, fallback = true) {
-  const hint = fallback ? 'Y/n' : 'y/N';
-  const answer = (await rl.question(`${question} [${hint}]: `)).trim().toLowerCase();
+  stdout.write(`${question} [${fallback ? 'Y/n' : 'y/N'}]: `);
+  const answer = (await nextLine()).trim().toLowerCase();
   if (!answer) return fallback;
   return answer === 'y' || answer === 'yes';
+}
+
+/**
+ * YYYY-MM-DD 날짜. 형식이 틀리면 다시 묻는다.
+ * 이 값이 정렬 · 히트맵 · 복습 이력의 기준이라 조용히 틀리면 안 된다.
+ */
+export async function askDate(question, fallback) {
+  const answer = await ask(question, fallback);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(answer) || Number.isNaN(Date.parse(answer))) {
+    stdout.write(`날짜는 YYYY-MM-DD 형식이어야 합니다: ${answer}\n`);
+    return askDate(question, fallback);
+  }
+  return answer;
 }
 
 /**
@@ -25,29 +66,33 @@ export async function confirm(question, fallback = true) {
  * @param {{label: string, value: any}[]} options
  */
 export async function pick(question, options, fallbackIndex = 0) {
-  console.log(`\n${question}`);
-  options.forEach((o, i) => console.log(`  ${i + 1}. ${o.label}`));
-  const answer = (await rl.question(`선택 (${fallbackIndex + 1}): `)).trim();
+  stdout.write(`\n${question}\n`);
+  options.forEach((o, i) => stdout.write(`  ${i + 1}. ${o.label}\n`));
+  stdout.write(`선택 (${fallbackIndex + 1}): `);
+
+  const answer = (await nextLine()).trim();
   const index = answer ? Number(answer) - 1 : fallbackIndex;
   if (!Number.isInteger(index) || index < 0 || index >= options.length) {
-    console.log('범위를 벗어난 선택입니다. 다시 골라주세요.');
+    stdout.write('범위를 벗어난 선택입니다. 다시 골라주세요.\n');
     return pick(question, options, fallbackIndex);
   }
   return options[index].value;
 }
 
 /**
- * 번호를 쉼표로 여러 개 고르기. 빈 입력은 빈 배열.
+ * 번호를 쉼표로 여러 개 고르기. 엔터만 치면 지금 선택을 유지한다.
  * @param {{label: string, value: any}[]} options
  */
 export async function pickMany(question, options, selected = []) {
-  console.log(`\n${question}`);
+  stdout.write(`\n${question}\n`);
   options.forEach((o, i) => {
-    const mark = selected.includes(o.value) ? '×' : ' ';
-    console.log(`  [${mark}] ${i + 1}. ${o.label}`);
+    stdout.write(`  [${selected.includes(o.value) ? '×' : ' '}] ${i + 1}. ${o.label}\n`);
   });
-  const answer = (await rl.question('번호를 쉼표로 구분해 입력 (엔터 = 유지): ')).trim();
+  stdout.write('번호를 쉼표로 구분해 입력 (엔터 = 유지): ');
+
+  const answer = (await nextLine()).trim();
   if (!answer) return selected;
+
   const picked = answer
     .split(',')
     .map((s) => Number(s.trim()) - 1)
@@ -56,15 +101,15 @@ export async function pickMany(question, options, selected = []) {
   return [...new Set(picked)];
 }
 
-/** 여러 줄 입력. 빈 줄 두 번이면 종료. */
+/** 여러 줄 입력. 빈 줄에서 엔터를 한 번 더 누르면 끝난다. */
 export async function askMultiline(question) {
-  console.log(`\n${question}`);
-  console.log('(작성 후 빈 줄에서 엔터를 한 번 더 누르면 끝납니다)');
+  stdout.write(`\n${question}\n(작성 후 빈 줄에서 엔터를 한 번 더 누르면 끝납니다)\n`);
+
   const lines = [];
   for (;;) {
-    const line = await rl.question('> ');
-    if (line === '' && lines.at(-1) === '') break;
-    if (line === '' && lines.length === 0) break;
+    stdout.write('> ');
+    const line = await nextLine();
+    if (line === '' && (lines.length === 0 || lines.at(-1) === '')) break;
     lines.push(line);
   }
   return lines.join('\n').trim();
