@@ -1,0 +1,787 @@
+[
+  {
+    "id": "pgs-12906",
+    "platform": "PGS",
+    "number": 12906,
+    "title": "같은 숫자는 싫어",
+    "difficulty": "Level 1",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/12906",
+    "sourcePath": "프로그래머스/1/12906. 같은 숫자는 싫어",
+    "category": "스택／큐",
+    "types": [
+      "Stack",
+      "Queue"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-22",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "114 MB",
+      "time": "42.43 ms"
+    }
+  },
+  {
+    "id": "pgs-12909",
+    "platform": "PGS",
+    "number": 12909,
+    "title": "올바른 괄호",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/12909",
+    "sourcePath": "프로그래머스/2/12909. 올바른 괄호",
+    "category": "스택／큐",
+    "types": [
+      "Stack",
+      "Queue"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-22",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "57.8 MB",
+      "time": "15.38 ms"
+    }
+  },
+  {
+    "id": "pgs-1845",
+    "platform": "PGS",
+    "number": 1845,
+    "title": "폰켓몬",
+    "difficulty": "Level 1",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/1845",
+    "sourcePath": "프로그래머스/1/1845. 폰켓몬",
+    "category": "해시",
+    "types": [
+      "Hash"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-13",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "82.2 MB",
+      "time": "3.85 ms"
+    }
+  },
+  {
+    "id": "pgs-250137",
+    "platform": "PGS",
+    "number": 250137,
+    "title": "[PCCP 기출문제] 1번 / 붕대 감기",
+    "difficulty": "Level 1",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/250137",
+    "sourcePath": "프로그래머스/1/250137. ［PCCP 기출문제］ 1번 ／ 붕대 감기",
+    "category": "PCCP 기출문제",
+    "types": [],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-07",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "80.2 MB",
+      "time": "0.06 ms"
+    }
+  },
+  {
+    "id": "pgs-340212",
+    "platform": "PGS",
+    "number": 340212,
+    "title": "[PCCP 기출문제] 2번 / 퍼즐 게임 챌린지",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/340212",
+    "sourcePath": "프로그래머스/2/340212. ［PCCP 기출문제］ 2번 ／ 퍼즐 게임 챌린지",
+    "category": "PCCP 기출문제",
+    "types": [],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-29",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "109 MB",
+      "time": "25.99 ms"
+    }
+  },
+  {
+    "id": "pgs-340213",
+    "platform": "PGS",
+    "number": 340213,
+    "title": "[PCCP 기출문제] 1번 / 동영상 재생기",
+    "difficulty": "Level 1",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/340213",
+    "sourcePath": "프로그래머스/1/340213. ［PCCP 기출문제］ 1번 ／ 동영상 재생기",
+    "category": "PCCP 기출문제",
+    "types": [],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-29",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "91 MB",
+      "time": "11.36 ms"
+    }
+  },
+  {
+    "id": "pgs-42576",
+    "platform": "PGS",
+    "number": 42576,
+    "title": "완주하지 못한 선수",
+    "difficulty": "Level 1",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42576",
+    "sourcePath": "프로그래머스/1/42576. 완주하지 못한 선수",
+    "category": "해시",
+    "types": [
+      "Hash"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-13",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "116 MB",
+      "time": "55.13 ms"
+    }
+  },
+  {
+    "id": "pgs-42577",
+    "platform": "PGS",
+    "number": 42577,
+    "title": "전화번호 목록",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42577",
+    "sourcePath": "프로그래머스/2/42577. 전화번호 목록",
+    "category": "해시",
+    "types": [
+      "Hash"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-24",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "118 MB",
+      "time": "229.35 ms"
+    }
+  },
+  {
+    "id": "pgs-42578",
+    "platform": "PGS",
+    "number": 42578,
+    "title": "의상",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42578",
+    "sourcePath": "프로그래머스/2/42578. 의상",
+    "category": "해시",
+    "types": [
+      "Hash"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-13",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "80.8 MB",
+      "time": "0.17 ms"
+    }
+  },
+  {
+    "id": "pgs-42579",
+    "platform": "PGS",
+    "number": 42579,
+    "title": "베스트앨범",
+    "difficulty": "Level 3",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42579",
+    "sourcePath": "프로그래머스/3/42579. 베스트앨범",
+    "category": "해시",
+    "types": [
+      "Hash"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-24",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "89.6 MB",
+      "time": "2.77 ms"
+    }
+  },
+  {
+    "id": "pgs-42583",
+    "platform": "PGS",
+    "number": 42583,
+    "title": "다리를 지나는 트럭",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42583",
+    "sourcePath": "프로그래머스/2/42583. 다리를 지나는 트럭",
+    "category": "스택／큐",
+    "types": [
+      "Stack",
+      "Queue"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-24",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "96.3 MB",
+      "time": "15.37 ms"
+    }
+  },
+  {
+    "id": "pgs-42584",
+    "platform": "PGS",
+    "number": 42584,
+    "title": "주식가격",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42584",
+    "sourcePath": "프로그래머스/2/42584. 주식가격",
+    "category": "스택／큐",
+    "types": [
+      "Stack",
+      "Queue"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-24",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "76.8 MB",
+      "time": "20.21 ms"
+    }
+  },
+  {
+    "id": "pgs-42586",
+    "platform": "PGS",
+    "number": 42586,
+    "title": "기능개발",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42586",
+    "sourcePath": "프로그래머스/2/42586. 기능개발",
+    "category": "스택／큐",
+    "types": [
+      "Stack",
+      "Queue"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-22",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "72.5 MB",
+      "time": "0.40 ms"
+    }
+  },
+  {
+    "id": "pgs-42587",
+    "platform": "PGS",
+    "number": 42587,
+    "title": "프로세스",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42587",
+    "sourcePath": "프로그래머스/2/42587. 프로세스",
+    "category": "스택／큐",
+    "types": [
+      "Stack",
+      "Queue"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-22",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "90.3 MB",
+      "time": "4.38 ms"
+    }
+  },
+  {
+    "id": "pgs-42626",
+    "platform": "PGS",
+    "number": 42626,
+    "title": "더 맵게",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42626",
+    "sourcePath": "프로그래머스/2/42626. 더 맵게",
+    "category": "힙（Heap）",
+    "types": [
+      "Heap",
+      "Priority Queue"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-22",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "140 MB",
+      "time": "650.86 ms"
+    }
+  },
+  {
+    "id": "pgs-42627",
+    "platform": "PGS",
+    "number": 42627,
+    "title": "디스크 컨트롤러",
+    "difficulty": "Level 3",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42627",
+    "sourcePath": "프로그래머스/3/42627. 디스크 컨트롤러",
+    "category": "힙（Heap）",
+    "types": [
+      "Heap",
+      "Priority Queue"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-30",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "83.7 MB",
+      "time": "2.82 ms"
+    }
+  },
+  {
+    "id": "pgs-42628",
+    "platform": "PGS",
+    "number": 42628,
+    "title": "이중우선순위큐",
+    "difficulty": "Level 3",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42628",
+    "sourcePath": "프로그래머스/3/42628. 이중우선순위큐",
+    "category": "힙（Heap）",
+    "types": [
+      "Heap",
+      "Priority Queue"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-30",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "119 MB",
+      "time": "114.32 ms"
+    }
+  },
+  {
+    "id": "pgs-42746",
+    "platform": "PGS",
+    "number": 42746,
+    "title": "가장 큰 수",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42746?language=java",
+    "sourcePath": "프로그래머스/2/42746. 가장 큰 수",
+    "category": "정렬",
+    "types": [
+      "Sorting"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-22",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "141 MB",
+      "time": "115.38 ms"
+    }
+  },
+  {
+    "id": "pgs-42747",
+    "platform": "PGS",
+    "number": 42747,
+    "title": "H-Index",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42747#",
+    "sourcePath": "프로그래머스/2/42747. H－Index",
+    "category": "정렬",
+    "types": [
+      "Sorting"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-03",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "82.3 MB",
+      "time": "5.51 ms"
+    }
+  },
+  {
+    "id": "pgs-42748",
+    "platform": "PGS",
+    "number": 42748,
+    "title": "K번째수",
+    "difficulty": "Level 1",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42748?language=java",
+    "sourcePath": "프로그래머스/1/42748. K번째수",
+    "category": "정렬",
+    "types": [
+      "Sorting"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-22",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "86.5 MB",
+      "time": "5.36 ms"
+    }
+  },
+  {
+    "id": "pgs-42839",
+    "platform": "PGS",
+    "number": 42839,
+    "title": "소수 찾기",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42839",
+    "sourcePath": "프로그래머스/2/42839. 소수 찾기",
+    "category": "완전탐색",
+    "types": [
+      "Brute Force"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-27",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "82 MB",
+      "time": "9.85 ms"
+    }
+  },
+  {
+    "id": "pgs-42840",
+    "platform": "PGS",
+    "number": 42840,
+    "title": "모의고사",
+    "difficulty": "Level 1",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42840",
+    "sourcePath": "프로그래머스/1/42840. 모의고사",
+    "category": "완전탐색",
+    "types": [
+      "Brute Force"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-04",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "83.6 MB",
+      "time": "0.47 ms"
+    }
+  },
+  {
+    "id": "pgs-42842",
+    "platform": "PGS",
+    "number": 42842,
+    "title": "카펫",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42842",
+    "sourcePath": "프로그래머스/2/42842. 카펫",
+    "category": "완전탐색",
+    "types": [
+      "Brute Force"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-28",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "77.4 MB",
+      "time": "0.03 ms"
+    }
+  },
+  {
+    "id": "pgs-42860",
+    "platform": "PGS",
+    "number": 42860,
+    "title": "조이스틱",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42860",
+    "sourcePath": "프로그래머스/2/42860. 조이스틱",
+    "category": "탐욕법（Greedy）",
+    "types": [
+      "Greedy"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-06",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "82.1 MB",
+      "time": "0.05 ms"
+    }
+  },
+  {
+    "id": "pgs-42861",
+    "platform": "PGS",
+    "number": 42861,
+    "title": "섬 연결하기",
+    "difficulty": "Level 3",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42861",
+    "sourcePath": "프로그래머스/3/42861. 섬 연결하기",
+    "category": "탐욕법（Greedy）",
+    "types": [
+      "Greedy"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-10",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "88.3 MB",
+      "time": "2.71 ms"
+    }
+  },
+  {
+    "id": "pgs-42862",
+    "platform": "PGS",
+    "number": 42862,
+    "title": "체육복",
+    "difficulty": "Level 1",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42862",
+    "sourcePath": "프로그래머스/1/42862. 체육복",
+    "category": "탐욕법（Greedy）",
+    "types": [
+      "Greedy"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-06",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "77.9 MB",
+      "time": "0.41 ms"
+    }
+  },
+  {
+    "id": "pgs-42883",
+    "platform": "PGS",
+    "number": 42883,
+    "title": "큰 수 만들기",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42883",
+    "sourcePath": "프로그래머스/2/42883. 큰 수 만들기",
+    "category": "탐욕법（Greedy）",
+    "types": [
+      "Greedy"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-10",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "94.9 MB",
+      "time": "58.49 ms"
+    }
+  },
+  {
+    "id": "pgs-42884",
+    "platform": "PGS",
+    "number": 42884,
+    "title": "단속카메라",
+    "difficulty": "Level 3",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42884",
+    "sourcePath": "프로그래머스/3/42884. 단속카메라",
+    "category": "탐욕법（Greedy）",
+    "types": [
+      "Greedy"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-10",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "59.4 MB",
+      "time": "7.04 ms"
+    }
+  },
+  {
+    "id": "pgs-42885",
+    "platform": "PGS",
+    "number": 42885,
+    "title": "구명보트",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/42885",
+    "sourcePath": "프로그래머스/2/42885. 구명보트",
+    "category": "탐욕법（Greedy）",
+    "types": [
+      "Greedy"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-06",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "59.3 MB",
+      "time": "9.54 ms"
+    }
+  },
+  {
+    "id": "pgs-43165",
+    "platform": "PGS",
+    "number": 43165,
+    "title": "타겟 넘버",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/43165",
+    "sourcePath": "프로그래머스/2/43165. 타겟 넘버",
+    "category": "깊이／너비 우선 탐색（DFS／BFS）",
+    "types": [
+      "DFS/BFS"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-07-29",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "81.4 MB",
+      "time": "3.59 ms"
+    }
+  },
+  {
+    "id": "pgs-43238",
+    "platform": "PGS",
+    "number": 43238,
+    "title": "입국심사",
+    "difficulty": "Level 3",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/43238",
+    "sourcePath": "프로그래머스/3/43238. 입국심사",
+    "category": "이분탐색",
+    "types": [
+      "Binary Search"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-10",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "113 MB",
+      "time": "45.68 ms"
+    }
+  },
+  {
+    "id": "pgs-84512",
+    "platform": "PGS",
+    "number": 84512,
+    "title": "모음 사전",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/84512",
+    "sourcePath": "프로그래머스/2/84512. 모음 사전",
+    "category": "완전탐색",
+    "types": [
+      "Brute Force"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-04",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "80.5 MB",
+      "time": "15.10 ms"
+    }
+  },
+  {
+    "id": "pgs-86491",
+    "platform": "PGS",
+    "number": 86491,
+    "title": "최소직사각형",
+    "difficulty": "Level 1",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/86491",
+    "sourcePath": "프로그래머스/1/86491. 최소직사각형",
+    "category": "완전탐색",
+    "types": [
+      "Brute Force"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-04",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "81.9 MB",
+      "time": "0.66 ms"
+    }
+  },
+  {
+    "id": "pgs-87946",
+    "platform": "PGS",
+    "number": 87946,
+    "title": "피로도",
+    "difficulty": "Level 2",
+    "url": "https://school.programmers.co.kr/learn/courses/30/lessons/87946",
+    "sourcePath": "프로그래머스/2/87946. 피로도",
+    "category": "완전탐색",
+    "types": [
+      "Brute Force"
+    ],
+    "mistakes": [],
+    "reviewStatus": "UNTOUCHED",
+    "firstSolvedAt": "2026-08-04",
+    "lastReviewedAt": null,
+    "reviewCount": 0,
+    "concepts": [],
+    "performance": {
+      "memory": "80 MB",
+      "time": "1.57 ms"
+    }
+  }
+]
