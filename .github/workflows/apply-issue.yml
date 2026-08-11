@@ -1,0 +1,97 @@
+name: Apply issue form
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: write
+
+# 이슈를 연달아 올려도 커밋이 서로 밀지 않도록 한 번에 하나씩
+concurrency:
+  group: apply-issue
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    # 공개 레포라 누구나 이슈를 열 수 있다. 저장소 주인이 올린 것만 반영한다.
+    if: >-
+      github.event.issue.user.login == github.repository_owner &&
+      (contains(github.event.issue.labels.*.name, 'annotate') ||
+       contains(github.event.issue.labels.*.name, 'review') ||
+       contains(github.event.issue.labels.*.name, 'concept'))
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: 어떤 폼인지 판별
+        id: kind
+        env:
+          LABELS: ${{ join(github.event.issue.labels.*.name, ' ') }}
+        run: |
+          for kind in annotate review concept; do
+            case " $LABELS " in
+              *" $kind "*) echo "kind=$kind" >> "$GITHUB_OUTPUT"; exit 0 ;;
+            esac
+          done
+          echo "라벨에서 폼 종류를 찾지 못했습니다: $LABELS" >&2
+          exit 1
+
+      - name: 데이터에 반영
+        id: apply
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: node scripts/apply-issue.mjs "${{ steps.kind.outputs.kind }}"
+
+      - name: 커밋
+        id: commit
+        env:
+          # 학습 기록이 본인 잔디로 남도록 이슈 작성자 이름으로 커밋한다
+          AUTHOR: ${{ github.event.issue.user.login }}
+          AUTHOR_ID: ${{ github.event.issue.user.id }}
+          SUMMARY: ${{ steps.apply.outputs.summary }}
+        run: |
+          git config user.name "$AUTHOR"
+          git config user.email "$AUTHOR_ID+$AUTHOR@users.noreply.github.com"
+          git add data content
+
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git commit -m "$SUMMARY" -m "Closes #${{ github.event.issue.number }}"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: 이슈 닫기
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          CHANGED: ${{ steps.commit.outputs.changed }}
+          SHA: ${{ steps.commit.outputs.sha }}
+        run: |
+          if [ "$CHANGED" = "true" ]; then
+            gh issue comment "$NUMBER" --body "반영했습니다. \`$SHA\` · 배포가 끝나면 https://minzix.github.io/algo-archive/ 에 나타납니다."
+            gh issue close "$NUMBER"
+          else
+            gh issue comment "$NUMBER" --body "바뀐 내용이 없어 커밋하지 않았습니다."
+          fi
+
+      - name: 실패하면 이슈에 알리기
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$NUMBER" --body \
+            "반영하지 못했습니다. 내용을 고쳐서 저장하면 다시 시도합니다.
+          [실행 기록](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"

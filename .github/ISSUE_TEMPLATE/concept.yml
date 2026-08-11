@@ -1,0 +1,57 @@
+name: 개념 카드 추가
+description: 새로 배운 문법이나 알고리즘을 복습 카드로 만듭니다.
+title: 'study: '
+labels: [concept]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: 종류
+      options:
+        - Java
+        - Algorithm
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    id: title
+    attributes:
+      label: 이름
+      placeholder: PriorityQueue
+    validations:
+      required: true
+
+  - type: input
+    id: description
+    attributes:
+      label: 한 줄 설명
+      placeholder: 우선순위에 따라 원소를 꺼내는 Queue
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: 예제 코드
+      render: java
+
+  - type: input
+    id: problems
+    attributes:
+      label: 관련 문제
+      description: 문제 ID를 쉼표로 구분해서. 예) pgs-42627, pgs-42628
+      placeholder: pgs-42627
+
+  - type: input
+    id: related
+    attributes:
+      label: 관련 개념
+      description: 개념 ID를 쉼표로 구분해서. 예) java-comparator
+      placeholder: java-comparator
+
+  - type: input
+    id: date
+    attributes:
+      label: 배운 날짜
+      description: YYYY-MM-DD. 비워두면 오늘로 기록합니다.

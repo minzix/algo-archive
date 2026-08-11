@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Code from '../../components/Code.astro';
 import { getContent, historyOf, problemCode, problems } from '../../lib/data';
 import { RESULT_LABEL, RESULT_TO_STATUS, type ReviewResult } from '../../lib/types';
+import { annotateUrl, reviewUrl } from '../../lib/issue';
 import { fullDate, href } from '../../lib/url';
 
 export function getStaticPaths() {
@@ -88,8 +89,10 @@ const results: { key: ReviewResult; tone: string }[] = [
               ) : (
                 <p class="p">
                   이 문제에는 오답노트가 없습니다. 복습을 마친 뒤{' '}
-                  <code>npm run annotate {problem.id}</code> 로 남겨두면 다음 복습 때 이 자리에
-                  나옵니다.
+                  <a href={annotateUrl(problem.id)} target="_blank" rel="noopener">
+                    오답노트를 써두면
+                  </a>{' '}
+                  다음 복습 때 이 자리에 나옵니다.
                 </p>
               )
             }
@@ -106,7 +109,7 @@ const results: { key: ReviewResult; tone: string }[] = [
     <section data-pane="3" hidden>
       <h2 class="section-title">STEP 3 · MY NEW SOLUTION</h2>
       <p class="lead">
-        여기에 적은 코드는 브라우저에만 남습니다. 저장하려면 마지막 단계의 명령을 실행하세요.
+        여기에 적은 코드는 브라우저에만 남습니다. 마지막 단계에서 폼을 제출하면 함께 저장됩니다.
       </p>
       <textarea class="card input input--code mono" id="solution" spellcheck="false"
       ></textarea>
@@ -150,6 +153,7 @@ const results: { key: ReviewResult; tone: string }[] = [
               class:list={['card option', { on: i === results.length - 1 }]}
               type="button"
               data-result={r.key}
+              data-label={RESULT_LABEL[r.key]}
             >
               <span class="dot" />
               <span class="olabel">{RESULT_LABEL[r.key]}</span>
@@ -162,12 +166,20 @@ const results: { key: ReviewResult; tone: string }[] = [
       </div>
 
       <div class="save card">
-        <p class="save-lead">터미널에서 아래 명령을 실행하면 이력과 상태가 기록됩니다.</p>
-        <div class="cmd">
-          <code class="mono" id="cmd"></code>
-          <button class="copy mono" type="button" id="copy">COPY</button>
-        </div>
-        <p class="save-hint mono">git commit -m "review: {problemCode(problem)}"</p>
+        <p class="save-lead">
+          아래 버튼을 누르면 고른 결과가 채워진 폼이 열립니다. 제출하면 이력과 상태가 기록되고
+          사이트가 다시 배포됩니다.
+        </p>
+        <a class="btn" id="submit" href={reviewUrl(problem.id)} target="_blank" rel="noopener">
+          복습 결과 기록하기 ↗
+        </a>
+        <details class="terminal">
+          <summary>터미널을 쓰고 싶다면</summary>
+          <div class="cmd">
+            <code class="mono" id="cmd"></code>
+            <button class="copy mono" type="button" id="copy">COPY</button>
+          </div>
+        </details>
       </div>
 
       <div class="nav">
@@ -188,8 +200,10 @@ const results: { key: ReviewResult; tone: string }[] = [
   const echo = document.querySelector<HTMLElement>('#echo')!;
   const cmd = document.querySelector<HTMLElement>('#cmd')!;
   const copyBtn = document.querySelector<HTMLButtonElement>('#copy')!;
+  const submit = document.querySelector<HTMLAnchorElement>('#submit')!;
+  const submitBase = submit.href;
 
-  // 초안은 브라우저에만 남는다. 실제 저장은 CLI 몫.
+  // 초안은 브라우저에만 남는다. 실제 저장은 폼 제출이나 CLI 몫.
   const draftKey = (name: string) => `algo-archive:${problemId}:${name}`;
 
   for (const [el, name] of [
@@ -204,6 +218,8 @@ const results: { key: ReviewResult; tone: string }[] = [
     panes.forEach((p) => (p.hidden = Number(p.dataset.pane) !== step));
     stepEls.forEach((s) => s.classList.toggle('done', Number(s.dataset.step) <= step));
     if (step === 2) echo.textContent = approach.value.trim() || '아직 적지 않았습니다.';
+    // 4단계로 올 때 3단계에서 쓴 코드를 폼 링크에 반영한다
+    if (step === 4) updateCommand();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -214,9 +230,19 @@ const results: { key: ReviewResult; tone: string }[] = [
   // 결과 선택 → 실행할 명령 갱신
   const options = [...document.querySelectorAll<HTMLElement>('.option')];
 
+  /** GitHub는 URL 길이에 한계가 있어 긴 코드는 프리필하지 않는다. */
+  const PREFILL_LIMIT = 4000;
+
   function updateCommand() {
     const picked = options.find((o) => o.classList.contains('on'))!;
     cmd.textContent = `npm run review ${problemId} -- --result=${picked.dataset.result}`;
+
+    const url = new URL(submitBase);
+    url.searchParams.set('result', picked.dataset.label!);
+
+    const code = solution.value.trim();
+    if (code && code.length <= PREFILL_LIMIT) url.searchParams.set('code', code);
+    submit.href = url.toString();
   }
 
   for (const option of options) {
@@ -455,12 +481,23 @@ const results: { key: ReviewResult; tone: string }[] = [
     color: var(--muted);
   }
 
+  .terminal {
+    margin-top: 18px;
+  }
+
+  .terminal summary {
+    font-size: 12px;
+    color: var(--muted-2);
+    cursor: pointer;
+  }
+
   .cmd {
     display: flex;
     align-items: center;
     gap: 12px;
     background: var(--code-bg);
     padding: 12px 14px;
+    margin-top: 12px;
   }
 
   .cmd code {

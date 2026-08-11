@@ -11,6 +11,7 @@ import {
   stats,
   typeCounts,
 } from '../lib/data';
+import { conceptUrl } from '../lib/issue';
 import { href, shortDate } from '../lib/url';
 
 const s = stats();
@@ -78,7 +79,7 @@ const tiles = [
             <p class="empty">
               복습이 필요한 문제가 없습니다.
               <br />
-              <code>npm run annotate &lt;id&gt;</code> 로 오답노트를 쓰면 여기에 쌓입니다.
+              문제 상세에서 오답노트를 쓰면 여기에 쌓입니다.
             </p>
           )
         }
@@ -155,7 +156,10 @@ const tiles = [
           </div>
         ) : (
           <p class="empty">
-            아직 기록한 개념이 없습니다. <code>npm run concept</code> 으로 추가하세요.
+            아직 기록한 개념이 없습니다.
+            <a class="add" href={conceptUrl()} target="_blank" rel="noopener">
+              개념 추가하기 →
+            </a>
           </p>
         )
       }
@@ -263,6 +267,11 @@ const tiles = [
     font-size: 13px;
     color: var(--muted);
     line-height: 1.9;
+  }
+
+  .add {
+    margin-left: 6px;
+    border-bottom: 1px solid var(--faint-3);
   }
 
   .empty code {
