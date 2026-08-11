@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "java-test-concept",
+    "category": "Java",
+    "title": "TestConcept",
+    "description": "파이프라인 검증용 임시 카드입니다. 확인 후 삭제합니다.",
+    "code": "System.out.println(\"test\");",
+    "relatedProblems": [
+      "pgs-42627"
+    ],
+    "related": [],
+    "learnedAt": "2026-08-11"
+  }
+]
