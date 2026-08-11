@@ -1,0 +1,202 @@
+---
+import '../styles/tokens.css';
+import { lastActivity } from '../lib/data';
+import { href, shortDate } from '../lib/url';
+
+interface Props {
+  title: string;
+  /** 헤더에서 활성 표시할 메뉴 */
+  nav: 'dashboard' | 'problems' | 'concepts' | 'reviews';
+}
+
+const { title, nav } = Astro.props;
+
+const menu = [
+  { label: 'Dashboard', key: 'dashboard', path: '/' },
+  { label: 'Problems', key: 'problems', path: '/problems' },
+  { label: 'Concepts', key: 'concepts', path: '/concepts' },
+  { label: 'Reviews', key: 'reviews', path: '/reviews' },
+] as const;
+
+const synced = shortDate(lastActivity());
+---
+
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
+    <title>{title} · Algorithm Archive</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
+    />
+  </head>
+
+  <body>
+    <header>
+      <div class="bar">
+        <a class="brand" href={href('/')}>
+          <span class="mark"></span>
+          <span class="wordmark">Algorithm Archive</span>
+        </a>
+
+        <nav>
+          {
+            menu.map((m) => (
+              <a class:list={['link', { active: nav === m.key }]} href={href(m.path)}>
+                {m.label}
+              </a>
+            ))
+          }
+        </nav>
+
+        <div class="meta">
+          <span class="sync mono">LAST SYNC {synced}</span>
+          <a class="gh mono" href="https://github.com/minzix/algo-archive">GITHUB</a>
+        </div>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer>
+      <div class="foot mono">
+        <span>ALGORITHM ARCHIVE · STATIC SITE ON GITHUB PAGES</span>
+        <span>NO DATABASE · REPOSITORY IS THE DATABASE</span>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(251, 251, 252, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar {
+    max-width: var(--page-w);
+    margin: 0 auto;
+    padding: 0 var(--page-pad);
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .mark {
+    width: 9px;
+    height: 9px;
+    background: var(--ink);
+    display: block;
+    align-self: center;
+  }
+
+  .wordmark {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  nav {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+  }
+
+  .link {
+    font-size: 13.5px;
+    letter-spacing: 0.01em;
+    padding: 4px 0;
+    white-space: nowrap;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+  }
+
+  .link.active {
+    color: var(--ink);
+    font-weight: 600;
+    border-bottom-color: var(--ink);
+  }
+
+  .meta {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .sync {
+    font-size: 11px;
+    color: var(--muted-2);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .gh {
+    font-size: 11px;
+    color: var(--ink);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 5px 10px;
+    letter-spacing: 0.04em;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+  }
+
+  .foot {
+    max-width: var(--page-w);
+    margin: 0 auto;
+    padding: 28px var(--page-pad);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 11px;
+    color: var(--muted-2);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .bar {
+      gap: 24px;
+      height: auto;
+      padding-block: 14px;
+      flex-wrap: wrap;
+    }
+
+    nav {
+      gap: 18px;
+      order: 3;
+      width: 100%;
+    }
+
+    .meta {
+      gap: 10px;
+    }
+
+    .foot {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+</style>

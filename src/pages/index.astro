@@ -1,17 +1,382 @@
 ---
+import Base from '../layouts/Base.astro';
+import Heatmap from '../components/Heatmap.astro';
+import PageHead from '../components/PageHead.astro';
+import Section from '../components/Section.astro';
+import {
+  mistakeCounts,
+  needsReview,
+  problemCode,
+  recentConcepts,
+  stats,
+  typeCounts,
+} from '../lib/data';
+import { href, shortDate } from '../lib/url';
 
+const s = stats();
+const mistakes = mistakeCounts();
+const types = typeCounts().slice(0, 5);
+const review = needsReview().slice(0, 4);
+const learned = recentConcepts(3);
+
+const maxMistake = mistakes[0]?.count ?? 1;
+/** 막대는 최다 오답 유형을 100%로 잡은 상대 길이 */
+const barShades = ['#2b2e33', '#4a4d55', '#797d85', '#a8acb3', '#c9ccd1'];
+
+const tiles = [
+  { value: s.total, label: '총 문제 수', color: 'var(--ink)' },
+  { value: s.understood, label: '복습 완료', color: 'var(--ok)' },
+  { value: s.needsReview, label: '복습 필요', color: 'var(--warn)' },
+  { value: s.concepts, label: '새로 배운 개념', color: 'var(--ink)' },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title="Dashboard" nav="dashboard">
+  <main class="page">
+    <PageHead
+      eyebrow="DASHBOARD"
+      title="학습 아카이브"
+      note="문제 풀이 과정, 오답 원인, 복습 이력을 Git 저장소에 기록합니다."
+    />
+
+    <div class="tiles card">
+      {
+        tiles.map((t) => (
+          <div class="tile">
+            <div class="value mono" style={`color: ${t.color}`}>
+              {t.value}
+            </div>
+            <div class="caption">{t.label}</div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="row row--wide">
+      <div class="card pad">
+        <Section title="LEARNING HEATMAP" aside="최근 26주">
+          <Heatmap />
+        </Section>
+      </div>
+
+      <div class="card pad">
+        <div class="bar">
+          <h2 class="section-title">NEEDS REVIEW</h2>
+          <span class="mono count">{s.needsReview}</span>
+        </div>
+        {
+          review.length ? (
+            <div class="list">
+              {review.map((p) => (
+                <a class="entry" href={href(`/problems/${p.id}`)}>
+                  <span class="mono id">{problemCode(p)}</span>
+                  <span class="sub">{p.mistakes[0] ?? '—'}</span>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p class="empty">
+              복습이 필요한 문제가 없습니다.
+              <br />
+              <code>npm run annotate &lt;id&gt;</code> 로 오답노트를 쓰면 여기에 쌓입니다.
+            </p>
+          )
+        }
+        <a class="more" href={href('/reviews')}>전체 보기 →</a>
+      </div>
+    </div>
+
+    <div class="row row--even">
+      <div class="card pad">
+        <Section title="MY WEAK POINTS">
+          {
+            mistakes.length ? (
+              <div class="weak">
+                {mistakes.map((m, i) => (
+                  <div class="weak-row">
+                    <span class="weak-label">{m.label}</span>
+                    <span class="track">
+                      <span
+                        class="fill"
+                        style={`width: ${Math.round((m.count / maxMistake) * 100)}%; background: ${barShades[Math.min(i, barShades.length - 1)]}`}
+                      />
+                    </span>
+                    <span class="mono num">{m.count}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p class="empty">아직 기록된 오답 유형이 없습니다.</p>
+            )
+          }
+        </Section>
+      </div>
+
+      <div class="card pad">
+        <Section title="PROBLEM TYPES">
+          <div class="table">
+            <div class="thead mono">
+              <span>TYPE</span><span class="r">SOLVED</span><span class="r">MISTAKES</span>
+            </div>
+            {
+              types.map((t) => (
+                <div class="trow">
+                  <span>{t.label}</span>
+                  <span class="r mono">{t.solved}</span>
+                  <span
+                    class="r mono"
+                    style={`color: ${t.mistakes > 5 ? 'var(--warn)' : 'var(--muted)'}`}
+                  >
+                    {t.mistakes}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
+        </Section>
+      </div>
+    </div>
+
+    <div class="card pad">
+      <div class="bar">
+        <h2 class="section-title">RECENTLY LEARNED</h2>
+        <a class="sub" href={href('/concepts')}>Concepts →</a>
+      </div>
+      {
+        learned.length ? (
+          <div class="table">
+            {learned.map((c) => (
+              <a class="crow" href={href(`/concepts/${c.id}`)}>
+                <span class="mono cname">{c.title}</span>
+                <span class="sub">{c.category === 'Java' ? 'Java API' : 'Algorithm'}</span>
+                <span class="mono r date">{shortDate(c.learnedAt)}</span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="empty">
+            아직 기록한 개념이 없습니다. <code>npm run concept</code> 으로 추가하세요.
+          </p>
+        )
+      }
+    </div>
+  </main>
+</Base>
+
+<style>
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 24px;
+  }
+
+  .tile {
+    padding: 26px 28px;
+    border-right: 1px solid var(--border);
+  }
+
+  .tile:last-child {
+    border-right: 0;
+  }
+
+  .value {
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .caption {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  .row {
+    display: grid;
+    gap: 24px;
+    margin-bottom: 24px;
+    align-items: start;
+  }
+
+  .row--wide {
+    grid-template-columns: 1.55fr 1fr;
+  }
+
+  .row--even {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pad {
+    padding: 26px 28px 22px;
+  }
+
+  .bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+  }
+
+  .count {
+    font-size: 11px;
+    color: var(--warn);
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 0;
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .entry:last-child {
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .id {
+    font-size: 13px;
+  }
+
+  .sub {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .more {
+    display: inline-block;
+    margin-top: 18px;
+    font-size: 12.5px;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+  }
+
+  .empty {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.9;
+  }
+
+  .empty code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+  }
+
+  /* MY WEAK POINTS */
+  .weak {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .weak-row {
+    display: grid;
+    grid-template-columns: 92px 1fr 28px;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .weak-label {
+    font-size: 12.5px;
+    color: var(--ink-3);
+  }
+
+  .track {
+    height: 8px;
+    background: var(--border-soft);
+    display: block;
+  }
+
+  .fill {
+    display: block;
+    height: 8px;
+  }
+
+  .num {
+    font-size: 12px;
+    text-align: right;
+  }
+
+  /* PROBLEM TYPES / RECENTLY LEARNED */
+  .table {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .thead {
+    display: grid;
+    grid-template-columns: 1fr 90px 90px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 11px;
+    color: var(--muted-2);
+    letter-spacing: 0.06em;
+  }
+
+  .trow {
+    display: grid;
+    grid-template-columns: 1fr 90px 90px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 13px;
+    align-items: center;
+  }
+
+  .trow:last-child {
+    border-bottom: 0;
+  }
+
+  .crow {
+    display: grid;
+    grid-template-columns: 1fr 160px 80px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-soft);
+    align-items: center;
+  }
+
+  .crow:last-child {
+    border-bottom: 0;
+  }
+
+  .cname {
+    font-size: 14px;
+  }
+
+  .date {
+    font-size: 12px;
+    color: var(--muted-2);
+  }
+
+  .r {
+    text-align: right;
+  }
+
+  @media (max-width: 1000px) {
+    .tiles {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tile:nth-child(2) {
+      border-right: 0;
+    }
+
+    .tile:nth-child(-n + 2) {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .row--wide,
+    .row--even {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
