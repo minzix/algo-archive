@@ -20,5 +20,16 @@
         "codeFile": "review-2026-08-12.java"
       }
     ]
+  },
+  {
+    "problemId": "pgs-42579",
+    "history": [
+      {
+        "date": "2026-08-12",
+        "result": "FAILED",
+        "note": "map을 정렬해야 할 때에는 Map.Entry<>, .entrySet() 을 사용해서 list로 바꿔야 함\neg. List<Map.Entry<String, List<Integer>>> list = new ArrayList<>(map.entrySet());",
+        "codeFile": "review-2026-08-12.java"
+      }
+    ]
   }
 ]
