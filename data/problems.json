@@ -146,10 +146,10 @@
       "Hash"
     ],
     "mistakes": [],
-    "reviewStatus": "UNTOUCHED",
+    "reviewStatus": "UNDERSTOOD",
     "firstSolvedAt": "2026-07-13",
-    "lastReviewedAt": null,
-    "reviewCount": 0,
+    "lastReviewedAt": "2026-08-12",
+    "reviewCount": 1,
     "concepts": [],
     "performance": {
       "memory": "116 MB",

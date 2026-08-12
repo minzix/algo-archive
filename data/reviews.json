@@ -11,6 +11,17 @@
     ]
   },
   {
+    "problemId": "pgs-42576",
+    "history": [
+      {
+        "date": "2026-08-12",
+        "result": "UNDERSTOOD",
+        "note": "",
+        "codeFile": "review-2026-08-12.java"
+      }
+    ]
+  },
+  {
     "problemId": "pgs-42577",
     "history": [
       {
