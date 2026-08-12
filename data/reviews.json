@@ -1,5 +1,16 @@
 [
   {
+    "problemId": "pgs-42577",
+    "history": [
+      {
+        "date": "2026-08-12",
+        "result": "UNDERSTOOD",
+        "note": "* `String.startsWith(\"문자열\")` → 해당 문자열로 시작하는지 검사하고 `true/false` 반환\n* `Arrays.sort(String[])` → 문자열을 사전순 오름차순으로 정렬\n* `\"2\"`, `\"10\"` → 숫자 기준 `2 < 10`이지만 문자열 기준 `\"10\" < \"2\"`로 정렬됨",
+        "codeFile": "review-2026-08-12.java"
+      }
+    ]
+  },
+  {
     "problemId": "pgs-42578",
     "history": [
       {
