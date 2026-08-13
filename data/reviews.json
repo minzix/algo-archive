@@ -1,5 +1,16 @@
 [
   {
+    "problemId": "pgs-12906",
+    "history": [
+      {
+        "date": "2026-08-13",
+        "result": "UNDERSTOOD",
+        "note": "stack.get(0); 으로 접속하면 스택의 맨 아래 원소에 접근할 수 있다. 즉, 리스트와 같이 인덱스로도 접근이 가능하다. 이걸 몰라서 굳이 리스트를 하나 더 써서 순서를 뒤집었다.",
+        "codeFile": "review-2026-08-13.java"
+      }
+    ]
+  },
+  {
     "problemId": "pgs-1845",
     "history": [
       {
