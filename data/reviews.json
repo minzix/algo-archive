@@ -97,5 +97,16 @@
         "codeFile": "review-2026-08-13.java"
       }
     ]
+  },
+  {
+    "problemId": "pgs-42586",
+    "history": [
+      {
+        "date": "2026-08-13",
+        "result": "UNDERSTOOD",
+        "note": "day 에 추가할 값 (add) 계산 시, prev 추가가 필요합니다 \nInteger progress = queue.poll();\nint prev = day * speeds[idx]; // 추가 필요\nint add = (100 - (progress + prev)) / speeds[idx];",
+        "codeFile": "review-2026-08-13.java"
+      }
+    ]
   }
 ]
