@@ -64,5 +64,16 @@
         "codeFile": "review-2026-08-13.java"
       }
     ]
+  },
+  {
+    "problemId": "pgs-42584",
+    "history": [
+      {
+        "date": "2026-08-13",
+        "result": "PARTIAL",
+        "note": "for문으로 배열을 순회하면서 해당 원소와 while문으로 스택을 peek() 한 값을 비교해서 해당원소가 더 작으면 떨어졌다고 판단하는 식이다. 이 때, 언제 떨어졌는지를 계산하기 위해서는 스택에 반드시 인덱스를 넣어야 한다. \nint idx = stack.pop();\nanswer[idx] = i - idx;",
+        "codeFile": "review-2026-08-13.java"
+      }
+    ]
   }
 ]
