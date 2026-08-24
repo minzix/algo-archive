@@ -153,6 +153,17 @@
     ]
   },
   {
+    "problemId": "pgs-42746",
+    "history": [
+      {
+        "date": "2026-08-24",
+        "result": "FAILED",
+        "note": "Arrays.sort(numberStr, (a, b) -> (b + a).compareTo(a + b)); 로 비교한 후 원소를 순서대로 바로 이어붙여야 했는데 dfs로 접근해서 오래걸림",
+        "codeFile": "review-2026-08-24.java"
+      }
+    ]
+  },
+  {
     "problemId": "pgs-42748",
     "history": [
       {

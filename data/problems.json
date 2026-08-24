@@ -406,10 +406,10 @@
       "Sorting"
     ],
     "mistakes": [],
-    "reviewStatus": "UNTOUCHED",
+    "reviewStatus": "NEEDS_REVIEW",
     "firstSolvedAt": "2026-07-22",
-    "lastReviewedAt": null,
-    "reviewCount": 0,
+    "lastReviewedAt": "2026-08-24",
+    "reviewCount": 1,
     "concepts": [],
     "performance": {
       "memory": "141 MB",
