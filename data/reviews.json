@@ -164,6 +164,17 @@
     ]
   },
   {
+    "problemId": "pgs-42747",
+    "history": [
+      {
+        "date": "2026-08-24",
+        "result": "FAILED",
+        "note": "문제이해가어려움",
+        "codeFile": "review-2026-08-24.java"
+      }
+    ]
+  },
+  {
     "problemId": "pgs-42748",
     "history": [
       {
