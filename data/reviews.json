@@ -184,5 +184,16 @@
         "codeFile": "review-2026-08-24.java"
       }
     ]
+  },
+  {
+    "problemId": "pgs-42840",
+    "history": [
+      {
+        "date": "2026-08-24",
+        "result": "PARTIAL",
+        "note": "마지막에 출력값 형태로 정리하는게 헷갈렸다 \n// 최고점 구하기\n        int max = Math.max(Math.max(answerCount[0], answerCount[1]), answerCount[2]);\n        \n        List<Integer> temp = new ArrayList<>();\n        for (int i = 0; i < answerCount.length; i++) {\n            if (answerCount[i] == max) temp.add(i + 1);\n        }\n        int[] answer = new int[temp.size()];\n        for (int i = 0; i < answer.length; i++) {\n            answer[i] = temp.get(i);\n        }\n        return answer;",
+        "codeFile": "review-2026-08-24.java"
+      }
+    ]
   }
 ]
