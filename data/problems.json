@@ -751,10 +751,10 @@
       "Brute Force"
     ],
     "mistakes": [],
-    "reviewStatus": "UNTOUCHED",
+    "reviewStatus": "UNDERSTOOD",
     "firstSolvedAt": "2026-08-04",
-    "lastReviewedAt": null,
-    "reviewCount": 0,
+    "lastReviewedAt": "2026-08-24",
+    "reviewCount": 1,
     "concepts": [],
     "performance": {
       "memory": "81.9 MB",
