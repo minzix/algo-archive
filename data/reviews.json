@@ -197,6 +197,17 @@
     ]
   },
   {
+    "problemId": "pgs-84512",
+    "history": [
+      {
+        "date": "2026-08-24",
+        "result": "PARTIAL",
+        "note": "sb.deleteCharAt(sb.length() - 1); 으로 푸는 부분에서 헤멤",
+        "codeFile": "review-2026-08-24.java"
+      }
+    ]
+  },
+  {
     "problemId": "pgs-86491",
     "history": [
       {
