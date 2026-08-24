@@ -151,5 +151,16 @@
         "codeFile": "review-2026-08-24.java"
       }
     ]
+  },
+  {
+    "problemId": "pgs-42748",
+    "history": [
+      {
+        "date": "2026-08-24",
+        "result": "PARTIAL",
+        "note": "배열의 특정 범위만 복사하는 메서드 = Arrays.copyOfRange\nint[] cutArray = Arrays.copyOfRange(array, command[0] - 1, command[1]);",
+        "codeFile": "review-2026-08-24.java"
+      }
+    ]
   }
 ]
