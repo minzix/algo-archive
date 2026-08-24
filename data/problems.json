@@ -335,10 +335,10 @@
       "Priority Queue"
     ],
     "mistakes": [],
-    "reviewStatus": "UNTOUCHED",
+    "reviewStatus": "UNDERSTOOD",
     "firstSolvedAt": "2026-07-22",
-    "lastReviewedAt": null,
-    "reviewCount": 0,
+    "lastReviewedAt": "2026-08-24",
+    "reviewCount": 1,
     "concepts": [],
     "performance": {
       "memory": "140 MB",
