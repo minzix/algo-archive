@@ -197,6 +197,17 @@
     ]
   },
   {
+    "problemId": "pgs-43165",
+    "history": [
+      {
+        "date": "2026-08-25",
+        "result": "PARTIAL",
+        "note": "배열을 순회하며 순서대로 원소를 선택하고, dfs로 선택하는건 부호 뿐이다. 따라서 for문으로 배열을 순회할 필요는 없고, + 하나, - 하나 이렇게 dfs 함수를 2번 재귀호출해서 푼다.",
+        "codeFile": "review-2026-08-25.java"
+      }
+    ]
+  },
+  {
     "problemId": "pgs-84512",
     "history": [
       {

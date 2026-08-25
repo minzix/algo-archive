@@ -682,10 +682,10 @@
       "DFS/BFS"
     ],
     "mistakes": [],
-    "reviewStatus": "UNTOUCHED",
+    "reviewStatus": "NEEDS_REVIEW",
     "firstSolvedAt": "2026-07-29",
-    "lastReviewedAt": null,
-    "reviewCount": 0,
+    "lastReviewedAt": "2026-08-25",
+    "reviewCount": 1,
     "concepts": [],
     "performance": {
       "memory": "81.4 MB",
